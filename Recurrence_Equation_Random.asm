@@ -119,8 +119,4 @@ hlt  ; Control de ejecución (No controlado)
 1010   ; Asignamos el valor de 4 a memoria 84
 
 
-;Donde queda almacenado el ultimo valor de que queda en memoria
-
-;como mostrar bx por pantalla
-
 
