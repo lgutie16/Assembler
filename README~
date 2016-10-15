@@ -1,0 +1,12 @@
+http://web.archive.org/web/20120822144129/http://www.cin.ufpe.br/~if817/arquivos/asmtut/index.html
+
+https://www.youtube.com/watch?v=Jg9NBFwYJZM
+
+http://www.dreamincode.net/forums/topic/232120-calling-assembly-routines-from-c/
+
+http://www.alpcentauri.info/assm_5.htm
+
+http://godlytalias.blogspot.com.co/2012/03/nasmassembly-language-program-to-sort.html
+
+--Setup envieroment--
+sudo apt-get install nasm

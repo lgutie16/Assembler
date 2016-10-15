@@ -73,7 +73,7 @@ void option1(){
 
 void option2(){
 	  //File specifications	
-	  int numbers = rand() % 30 + 1;  
+	  int numbers = rand() % 10 + 1;  
 	  cout << "Generate Numbers: " << numbers << endl;  
 	  int number;	  
 	  int numbersList[numbers];
@@ -82,7 +82,7 @@ void option2(){
 	  ofstream aleatorio;
 	  aleatorio.open ("aleatorio.txt");
 	  for (int i = 0; i < numbers; ++i){
-	  	number = rand() % 50 + 1;
+	  	number = rand() % 10 + 1;
 	  	aleatorio << number << '\n';
 	  	numbersList[i] = number;
 	  }

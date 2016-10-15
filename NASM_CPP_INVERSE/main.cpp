@@ -8,17 +8,7 @@ using namespace std;
 
 extern "C" int proceso(int *data, int size);
 
-//https://en.wikibooks.org/wiki/Algorithm_Implementation/Sorting/Insertion_sort#NASM
-//edx
-extern "C"
-void sort(int data[], int numbers){
-	 ofstream salida;
-	 salida.open ("salida.txt");
-	  for (int i = 0; i < numbers; ++i){
-	  	salida << data[i] << '\n';
-	  }
-	  salida.close();
-}
+
 
 void saveData(int data[], int numbers){
 	 ofstream salida;
@@ -27,6 +17,25 @@ void saveData(int data[], int numbers){
 	  	salida << data[i] << '\n';
 	  }
 	  salida.close();
+
+}
+
+//https://en.wikibooks.org/wiki/Algorithm_Implementation/Sorting/Insertion_sort#NASM
+//edx
+extern "C"
+void sort(int data[], int numbers){
+	int temp = 0;
+	for (int i = 0; i < numbers; ++i){
+		temp = data[i];
+		int j = i;
+		while(j>0 and temp < data[j-1]){
+			data[j] = data[j-1];
+			j--;
+		}	
+		data[j] = temp;
+	}
+
+	 saveData(data, numbers);
 }
 
 void showData(){
@@ -83,7 +92,7 @@ void option1(){
 
 void option2(){
 	  //File specifications	
-	  int numbers = rand() % 10 + 1;  
+	  int numbers = rand() % 1000 + 10;  
 	  cout << "Generate Numbers: " << numbers << endl;  
 	  int number;	  
 	  int numbersList[numbers];
@@ -92,7 +101,7 @@ void option2(){
 	  ofstream aleatorio;
 	  aleatorio.open ("aleatorio.txt");
 	  for (int i = 0; i < numbers; ++i){
-	  	number = rand() % 10 + 1;
+	  	number = rand() % 1000 + 1;
 	  	aleatorio << number << '\n';
 	  	numbersList[i] = number;
 	  }
