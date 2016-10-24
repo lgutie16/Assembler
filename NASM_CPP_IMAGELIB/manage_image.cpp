@@ -1,5 +1,12 @@
 #include <CImg.h>
+#include <iostream>
+
 using namespace cimg_library;
+
+extern "C"
+ void manageImage(int n){
+ 	std::cout<< n << std::endl;
+ }
 
 int main(int argc, char *argv[]) {
 	cimg_usage("Ejemplo basico.");

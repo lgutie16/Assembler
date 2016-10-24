@@ -1,5 +1,6 @@
 bits 32
 global _start
+extern manageImage
 
 sys_exit        equ     1
 sys_read        equ     3
@@ -15,10 +16,13 @@ message     db      "message"
 lenm        equ     $-message
 
 SECTION     .bss
-lpBuffer     resb    5
+lpBuffer     resb    10
 Buf_Len      equ     $-lpBuffer
 
 Buf          resb    1
+
+
+
 
 SECTION     .text
     
@@ -31,6 +35,22 @@ _start:
     mov     edx, Buf_Len
     call    ReadText
     push    eax
+    mov     eax, 4
+    push    eax
+    call    manageImage
+
+
+    mov     ecx, message
+    mov     edx, lenm
+    call    DisplayText
+
+    mov     ecx, lpBuffer
+    mov     edx, Buf_Len
+    call    ReadText
+    push    eax
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;    
     cmp     eax, Buf_Len
     jl      Good
@@ -40,16 +60,11 @@ _start:
     mov     byte [ecx + edx - 1], 10
     call    ClearTerminal
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;   
-Good:
-    mov     ecx, message
-    mov     edx, lenm
-    call    DisplayText
-    
-    pop     edx
-    mov     ecx, lpBuffer
-    call    DisplayText
-    
+
+Good:    
     jmp     Exit
+
+
     
 ClearTerminal:   
     mov     edx, 1
