@@ -1,0 +1,46 @@
+bits 32
+sys_exit        equ     1
+sys_read        equ     3
+sys_write       equ     4
+stdin           equ     0
+stdout          equ     1
+stderr          equ     3
+
+SECTION .data                           ; data section
+filename:   db "File Name? "            ; the string to print
+lenF:       equ $-filename              ; "$" means "here"
+                                        ; len is a value, not an address
+message:   db "Message to write? "     ; the string put in the image
+lenM:      equ $-message 
+
+
+
+
+SECTION .bss
+lpBuffer    resb    7
+Buf_Len     equ     $-lpBuffer
+Buf         resb   
+
+
+SECTION .text          ; code section
+     global _start     ; make label available to linker 
+
+
+
+_start:                ; standard  gcc  entry point 
+    mov     ecx, lpBuffer
+    mov     edx, Buf_Len
+    call    ReadText
+    push    eax
+
+DisplayText:
+    mov     eax, sys_write
+    mov     ebx, stdout
+    int     80H 
+    ret
+
+ReadText:
+    mov     ebx, stdin
+    mov     eax, sys_read
+    int     80H
+    ret
