@@ -1,0 +1,15 @@
+algorithm
+Read imageName, message - ready
+Verify arguments, directory, permmision - ready 
+Show Errors Messages - ready
+Open image - ready
+calc Image dimmension - left
+calc Image text message size - left
+Write in image - ready
+Save New Image - ready
+
+
+
+
+
+sudo apt-get install libopencv-dev

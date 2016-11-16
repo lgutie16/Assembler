@@ -16,17 +16,13 @@ struct Dim{
 };
 
 Dim d;
+Dim dtext;
+Mat imagen;
+
 
 extern "C" 
-int loadimg(char* arg){
-	
-	int i = 0;
-	while(*arg!='\0'){
-	    printf("%c", arg[i]);	   
-	    i++;
-	}
-
-	Mat imagen = imread(arg, 1);
+int loadimg(char* arg){	
+	imagen = imread(arg, 1);	
 	if(!imagen.data){
 		return 0; // Reading failure
 	}
@@ -44,6 +40,21 @@ int loadimg(char* arg){
 		datas[z] = imagen.data[z];	
 	}
 	return 1; // Reading success
+}
+
+extern "C"
+int writeimage(char* arg){
+	string label= arg++;
+	putText(imagen, 
+            label,
+            Point(115,115), // Coordinates
+            cv::FONT_HERSHEY_COMPLEX_SMALL, // Font
+            1.0, // Scale. 2.0 = 2x bigger
+            Scalar(81, 229, 18), // Color
+            1, // Thickness
+            CV_AA);
+	imwrite( "newImage.jpg", imagen);
+	return 1;
 }
 
 extern "C" 
@@ -74,6 +85,19 @@ int saveimg(char* arg){
 	free(datas);
 	// Success in the file writting
 	return 1;
+}
+
+extern "C"
+int gettextdims(char* arg){
+	double scale = ((float)(height-3))/20.0;
+	Size textSize = getTextSize(arg++, 
+	FONT_HERSHEY_COMPLEX_SMALL, scale, 1, &bottom);  //Geting text rect
+	dtext.c = textSize.width;
+	dtext.r = textSize.height;
+	int dimstext[2];
+	dimstext[1] = dtext.r;
+	dimstext[0] = dtext.c;
+	return *dimstext;
 }
 
 extern "C" 
