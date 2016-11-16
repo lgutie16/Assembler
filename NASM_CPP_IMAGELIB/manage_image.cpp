@@ -1,37 +1,35 @@
-#include <CImg.h>
+#include <unistd.h>
+#define cimg_OS 0
+#define cimg_display 0
+#include "CImg.h"
 #include <iostream>
 
 using namespace cimg_library;
-
-extern "C"
- void manageImage(int n){
- 	std::cout<< n << std::endl;
- }
-
-int main(int argc, char *argv[]) {
-	cimg_usage("Ejemplo basico.");
-	const char* filename = cimg_option("-i","love.jpg","Image file\n");
+using namespace std;
 
 
-	//Imagen color, 8 bits de profundidad por componente.
-	CImg<unsigned char> img(640,400,1,3);
-	img.fill(0); //Asigna 0 a todos los p´ıxeles
-	unsigned char rojo[] = { 255,0,0 }; //Define color rojo
-	img.draw_text(100,100,"Hello World",rojo); //Escribe en (100,100).
-	img.display("Hola..."); //Visualiza
-	CImg<unsigned char> img1(filename); //Carga de disco
-	img1.draw_text(100,100,"Hello World",rojo);
 
+	int loadimg(char* arg){
+		printf("hello");
+		return 7;
+	}
 
-	//Copia lo que hay en img1 pero como valores de punto flotante
-	CImg<float> img2(img1);
-	img2.normalize(0,1); //Normaliza en [0,1]
-	img2.sqrt(); //Aplica ra´ız cuadrada a cada pixel
-	img2.resize(250,150); //Redimensiona a 250x150
+	int saveimg(char* arg){
+		printf("hello");
+		return 8;
+	}
 
+	int getdims(){
+		printf("hello");
+		return 9;
+	}
+		
+		
+	void pixchange(int p1, int p2){
+		printf("hello");
+	}
 
-	//Visualiza ambas im´agenes a la vez
-	CImgDisplay vent1(img1,"original"), vent2(img2,"procesada");
-	while(!vent1.is_closed()){}
-	return 0;
-}
+	int main()
+	{
+	    return 0;
+	}
