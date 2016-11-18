@@ -22,6 +22,7 @@ SECTION .data
 	outfail1:   db  "The output file route %s is invalid.", 10, 0	
 	outfail2:   db  "The output file route %s is protected, change permissions.", 10, 0
 	argfail:    db  "The number of arguments is different to 2.", 10, 0
+	nofit:    	db  "Text Doesn't fit recalculating.", 10, 0
 	c:          dd  0   				 ;column iterator
 	r:          dd  0   				 ;row iterator
 	k:          dd  0   				 ;channel iterator
@@ -37,6 +38,8 @@ SECTION .bss
 	rows:		resd	1
 	pix1:		resd	1
 	pix2:		resd	1
+	width		resd	1
+	height		resd	1
 										;reserving memory space for variables that will be brought from C++	
 	
 SECTION	.text
@@ -65,19 +68,6 @@ main:
 	jne     nicht 						;its different
 	je      jah   						;its the same
 
-calcsize:
-	call    getdims 					;returns a pointer to an array with rows and cols values
-	mov     ecx, [eax]
-	mov     [cols], ecx
-	mov     ecx, [eax + 4]
-	mov     [rows], ecx	
-	cmp 	dword[arg2], ecx   			;does the text fit over image frame	
-	jne     resizeText 
-	je      jah
-
-
-resizetext:
-	call 	exit
 
 nicht:
 	push    argfail 					;failing message, number of arguments is greater
@@ -91,8 +81,32 @@ jah:
 	cmp     eax,0   					;whatever that function returns is stored in eax
 										;in this case we are checking if it returns 0 = failure
 										;or if returns 1 = success at loading the image	
-	jne     success
+	jne     calcsize
 	je      fail1   
+
+
+calcsize:
+	push    dword[arg2]
+	call 	gettextdims
+	cmp     eax, 0            			;whatever is returned is storage in eax
+	jne     success 					;if is no 1 is because text doesn't fit 
+	je      resizetext
+	;mov     ecx, [eax]
+	;mov     [width], ecx
+	;mov     ecx, [eax + 4]
+	;mov     [height], ecx
+
+	
+	;cmp 	dword[cols], ecx   			;does the text fit over image frame	horizontaly
+	;jne     resizetext 
+	;je      jah
+
+
+resizetext:
+	push    nofit 						;failing message, number of arguments is greater
+	call    printf  					;..than the two expected arguments
+	jmp     exit
+
 
 fail1:
 										;fail1 is a failure for an invalid input route
@@ -124,90 +138,6 @@ success:
 	mov     ecx, [eax + 4]
 	mov     [rows], ecx
 	
-	mov     eax, [cols]
-	mov     edx, 0	
-	mov     ecx, 2
-	div     ecx
-	mov     [colm], eax 				;half of the cols, because this is the horizontal
-										;..iteration limit, all that is needed for the mirror effect
-
-	mov     [dats], eax
-	jmp     startloop
-
-;the image data 'grid' (which is really an array) the program iterates with
-;the following formula:
-;col: number of given columns
-;3: fixed number of jpg channels
-;r: row iterator
-;c: column iterator
-;k: channel iterator
-
-;r * col * 3   +   c * 3  + k ; origin pixel
-;3 * ((r * col) + c) + k     ; factorized expression
-
-;r * col * 3   +  (col - c) * 3  + k ; destination pixel
-;3 * (col * (r + 1) - c) + k  ;factorized expression
-
-; By chance after factorizing, the resulting expression has a nested chained form,
-; ..which permits an easily solving of it with the concept of stack in ASM, doing 
-; ..operations from the innermost to the outermost, without having to store inter-
-; ..mediate values in other registries/variables.
-
-;loop format:
-;initialize iterator variable
-;[label of loop start]
-;	code of the loop control, check the iterator variable against a control variable (max)
-;if the 'equal' condition is not fulfilled, jump back to the loop start/label
-
-startloop: ;indentation just for aestethical value and understanding the nested loops
-	mov	[r], dword 0 ;row iterator
-	rowloop:		
-		mov	[c], dword 0 ;column iterator
-		columnloop:
-			mov	[k], dword 0 ;channel iterator
-			channelloop:
-				;find the origin pixel
-				mov      eax, [cols]			
-				imul     dword[r]
-				add      eax, [c]
-				mov      ecx, 3
-				imul     eax, ecx
-				add      eax, [k]
-				mov      [pix1], eax
-
-				;find the destination pixel
-				mov      eax, [r]
-				add      eax, 1
-				imul     dword[cols]
-				sub      eax, [c]
-				mov      ecx, 3
-				imul     eax, ecx
-				add      eax, [k]			
-				mov      [pix2], eax
-			
-				push     dword[pix1]
-				push     dword[pix2]
-				call     pixchange ;swap both origin and destination
-
-			;end channelloop, check the channel iterator
-			mov     eax, [k]
-			inc     eax ;increment
-			mov     [k], eax 
-			cmp     eax, 3   ;limit is 3
-			jne     channelloop
-		;end columnloop, check the column iterator
-		mov     eax, [c]
-		inc     eax ;increment
-		mov     [c], eax
-		cmp     eax, [colm] ;limit is half the column number
-		jne     columnloop
-	;end rowloop, check the row iterator
-	mov     eax, [r]
-	inc     eax ;increment
-	mov     [r], eax
-	cmp     eax, [rows] ;limit is number of rows
-	jne     rowloop
-
 save:
 	push    dword[arg2]
 	call    saveimg
@@ -219,4 +149,4 @@ save:
 
 exit:
 	mov     eax, sys_exit
-	int     80H
+	int		0x80

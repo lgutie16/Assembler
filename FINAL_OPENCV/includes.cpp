@@ -47,7 +47,7 @@ int writeimage(char* arg){
 	string label= arg++;
 	putText(imagen, 
             label,
-            Point(115,115), // Coordinates
+            Point(0,115), // Coordinates
             cv::FONT_HERSHEY_COMPLEX_SMALL, // Font
             1.0, // Scale. 2.0 = 2x bigger
             Scalar(81, 229, 18), // Color
@@ -89,15 +89,47 @@ int saveimg(char* arg){
 
 extern "C"
 int gettextdims(char* arg){
-	double scale = ((float)(height-3))/20.0;
+	/*int baseline = 0;
+	double scale = 0;
+	//double scale = ((float)(height-3))/20.0;
 	Size textSize = getTextSize(arg++, 
-	FONT_HERSHEY_COMPLEX_SMALL, scale, 1, &bottom);  //Geting text rect
+	FONT_HERSHEY_COMPLEX_SMALL, scale, 1, &baseline);  //Geting text rect
 	dtext.c = textSize.width;
 	dtext.r = textSize.height;
-	int dimstext[2];
-	dimstext[1] = dtext.r;
-	dimstext[0] = dtext.c;
-	return *dimstext;
+	if(dtext.c < d.c or dtext.c == d.c){
+		printf("True");		
+		return 1;
+	}
+	return 0;*/
+
+	/*int width = imagen.size().width;
+	int height = imagen.size().height;
+
+	int baseline = 0;
+	double scale = 0;
+	Size textSize = getTextSize(arg++, 
+	FONT_HERSHEY_COMPLEX_SMALL, scale, 1, &baseline);  //Geting text rect
+	int textwidth = textSize.width;
+	int textheight = textSize.height;
+	cout << (width)<< endl;
+	cout << (textwidth) << endl;
+	if(textwidth < width or textwidth == width){	
+		return 1;
+	}	
+	return 0;*/
+
+	int baseline = 0;
+	Size textSize = getTextSize(arg, 
+	FONT_HERSHEY_COMPLEX_SMALL,0.99,2,&baseline);  //Geting text rect
+	int textwidth = textSize.width;
+	int textheight = textSize.height;
+	cout << (arg)<< endl;
+	cout << (imagen.cols)<< endl;
+	cout << (textSize.width) << endl;
+	if(imagen.cols - textSize.width < 0 ){	
+		return 0;
+	}	
+	return 1;	
 }
 
 extern "C" 
@@ -109,6 +141,6 @@ int getdims(){
 }
 
 extern "C" 
-void pixchange(int p1, int p2){
-	datas[p1] = datas[p2]; // Swaps a couple of channels between pixels
+void pixchange(){
+	printf("Mañaaana tiene que calcular el tamaño!!!!!! pinche!");
 }
