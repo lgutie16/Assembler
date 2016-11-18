@@ -14,7 +14,10 @@ extern      getdims
 extern 		gettextdims
 extern      getdats
 extern      pixchange
+extern      getdifference
 extern 		writeimage
+extern 		writeresize
+
 
 SECTION .data
 	testfmt:    db  "%s %s", 10, 0 
@@ -55,12 +58,6 @@ main:
 	mov     eax, dword[edx + 8]
 	mov     [arg2], eax
  	
-	;push   dword[arg2]  				;test for printing the arguments
-	;push   dword[arg1]  				;..to see if the program is reading them
-	;push   testfmt
-	;call   printf
-	;push   dword[numa]  
-	;all    print
 
 
 	cmp     dword[numa], numargs 		;compare the number of arguments
@@ -103,9 +100,16 @@ calcsize:
 
 
 resizetext:
-	push    nofit 						;failing message, number of arguments is greater
-	call    printf  					;..than the two expected arguments
-	jmp     exit
+	push    nofit 						;advice message, message doesn't fit
+	call    printf  					
+	call 	getdifference
+	push 	eax
+	call   	writeresize
+	push    dword[arg2] 				;write text over image
+	call    writeimage
+	cmp 	eax, 0
+	je      exit
+	jne     exit 
 
 
 fail1:

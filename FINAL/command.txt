@@ -11,5 +11,15 @@ Save New Image - ready
 
 
 
+functions 
+putText size argument
+
+tenemos la diferencia, luego sacamos que porcentaje es eso del tamaño de la imagen, teniendo eso, es tener el porcentaje de tamañño que le haria falta para caber, entonces lo que necesitamos es decirle el tañano o numero de pixeles al cual se debe acoplar asi que a 100% se le resta ese porcentaje y luego a ese resultado los multiplicamos por 1 y ese seria el tamaño ideal o scale que se le pasa al puttext para que escriba sobre la imagen de 
+
+300
+600
+
+50% falta 
+100-50 = 50% = 0.5
 
 sudo apt-get install libopencv-dev

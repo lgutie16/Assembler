@@ -15,10 +15,11 @@ struct Dim{
 	int f;
 };
 
+//Global Variables
 Dim d;
 Dim dtext;
 Mat imagen;
-
+string label;
 
 extern "C" 
 int loadimg(char* arg){	
@@ -44,7 +45,7 @@ int loadimg(char* arg){
 
 extern "C"
 int writeimage(char* arg){
-	string label= arg++;
+	label= arg++;
 	putText(imagen, 
             label,
             Point(0,115), // Coordinates
@@ -56,6 +57,24 @@ int writeimage(char* arg){
 	imwrite( "newImage.jpg", imagen);
 	return 1;
 }
+
+extern "C"
+int writeresize(int resize){
+	double scale = 1*0.48;
+	cout << scale<< endl;
+	putText(imagen,
+            label,
+            Point(0,115), // Coordinates
+            cv::FONT_HERSHEY_COMPLEX_SMALL, // Font
+            scale, // Scale. 2.0 = 2x bigger
+            Scalar(81, 229, 18), // Color
+            1, // Thickness
+            CV_AA);
+	imwrite( "newImageR.jpg", imagen);
+	cout << "it was written"<< endl;
+	return 1;
+}
+
 
 extern "C" 
 int saveimg(char* arg){
@@ -104,7 +123,6 @@ int gettextdims(char* arg){
 
 	/*int width = imagen.size().width;
 	int height = imagen.size().height;
-
 	int baseline = 0;
 	double scale = 0;
 	Size textSize = getTextSize(arg++, 
@@ -117,7 +135,7 @@ int gettextdims(char* arg){
 		return 1;
 	}	
 	return 0;*/
-
+	label = arg++;
 	int baseline = 0;
 	Size textSize = getTextSize(arg, 
 	FONT_HERSHEY_COMPLEX_SMALL,0.99,2,&baseline);  //Geting text rect
@@ -131,6 +149,20 @@ int gettextdims(char* arg){
 	}	
 	return 1;	
 }
+
+
+extern "C"
+int getdifference(){
+	int baseline = 0;
+	Size textSize = getTextSize(label, 
+	FONT_HERSHEY_COMPLEX_SMALL,0.99,2,&baseline);  //Geting text rect
+	int textwidth = textSize.width;
+	int textheight = textSize.height;
+	cout << textSize.width - imagen.cols << endl;
+	return  textSize.width - imagen.cols;	
+}
+
+
 
 extern "C" 
 int getdims(){
