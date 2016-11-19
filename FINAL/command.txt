@@ -22,4 +22,45 @@ tenemos la diferencia, luego sacamos que porcentaje es eso del tamaño de la ima
 50% falta 
 100-50 = 50% = 0.5
 
+ejm
+tam imagen = 500
+
+
 sudo apt-get install libopencv-dev
+
+
+	;mov     ecx, [eax]
+	;mov     [width], ecx
+	;mov     ecx, [eax + 4]
+	;mov     [height], ecx
+
+	
+	;cmp 	dword[cols], ecx   			;does the text fit over image frame	horizontaly
+	;jne     resizetext 
+	;je      jah
+
+
+	mov     ecx, [eax]					;saving text width
+	mov     dword[width], ecx
+	mov 	eax, [width]
+	sub 	eax, dword[cols]			;text width - image width
+	mul 	dword[cien]
+	div		dword[cols]
+	sub		dword[cien], eax
+	div		dword[cien]
+
+
+
+	
+	mov 	[firstdif], eax
+	mov 	eax, 100
+	mul     dword[firstdif]
+	mov 	dword[mult], eax
+	mov 	eax, dword[width] 
+	div 	dword[mult]
+	mov 	eax, 100
+	sub		dword[mult], eax
+	mov 	dword[seconddif], eax
+	mov 	eax, 100
+	div 	dword[seconddif]
+	mov 	dword[seconddiv], eax

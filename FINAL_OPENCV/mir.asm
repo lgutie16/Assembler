@@ -29,6 +29,7 @@ SECTION .data
 	c:          dd  0   				 ;column iterator
 	r:          dd  0   				 ;row iterator
 	k:          dd  0   				 ;channel iterator
+	cien:		dd 	100
 	;declaring NASM variables
 
 SECTION .bss
@@ -41,8 +42,16 @@ SECTION .bss
 	rows:		resd	1
 	pix1:		resd	1
 	pix2:		resd	1
-	width		resd	1
-	height		resd	1
+	width:		resd	1
+	height:		resd	1
+	initial:	resd	1
+	firstdif:	resd	1
+	seconddif	resd	1
+	mult:		resd	1
+	firstdiv:	resd	1
+	seconddiv:	resd	1
+
+
 										;reserving memory space for variables that will be brought from C++	
 	
 SECTION	.text
@@ -88,25 +97,30 @@ calcsize:
 	cmp     eax, 0            			;whatever is returned is storage in eax
 	jne     success 					;if is no 1 is because text doesn't fit 
 	je      resizetext
-	;mov     ecx, [eax]
-	;mov     [width], ecx
-	;mov     ecx, [eax + 4]
-	;mov     [height], ecx
-
 	
-	;cmp 	dword[cols], ecx   			;does the text fit over image frame	horizontaly
-	;jne     resizetext 
-	;je      jah
 
 
 resizetext:
+	call 	getdims
+	mov     dword[cols], eax
 	push    nofit 						;advice message, message doesn't fit
-	call    printf  					
-	call 	getdifference
-	push 	eax
-	call   	writeresize
-	push    dword[arg2] 				;write text over image
-	call    writeimage
+	call    printf 
+	call 	getdifference				;now textwidth is in eax
+	mov		dword[initial], eax
+	
+	mov		eax, 1000
+	mul 	dword[cols]
+	mov		dword[mult], eax
+
+	mov 	eax, dword[mult]
+	mov 	edx, 0
+	div 	dword[initial]
+	mov		dword[firstdiv],eax
+	
+	
+
+	push 	dword[firstdiv]
+	call   	writeresize					;write resize text over the image
 	cmp 	eax, 0
 	je      exit
 	jne     exit 
